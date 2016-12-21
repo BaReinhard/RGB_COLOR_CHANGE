@@ -60,7 +60,7 @@ void printButton(int g)
  
 int main(int argc, char **argv)
 {
-  int RED,GREEN,BLUE;
+  int RED,GREEN,BLUE,i;
   RED = 33;
   GREEN = 35;
   BLUE = 37;
