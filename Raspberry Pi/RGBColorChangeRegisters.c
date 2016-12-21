@@ -80,7 +80,7 @@ int main(int argc, char **argv)
     //Sets BLUE Pin as Output
     INP_GPIO(BLUE); 
     OUT_GPIO(BLUE);
-  while(1){
+//  while(1){
     //I Have left in Previously Used Arduino C Code as a reference to see the difference between the two:
     //  void RGB(int R, int G, int B) {analogWrite(Red,R); analogWrite(Green,G); analogWrite(Blue,B); delay(25);}
 //r = 255;g = 0;b = 0; for (int i = 0; i < 256; ++i){RGB(r,i,b);}
@@ -113,7 +113,7 @@ int main(int argc, char **argv)
     //GPIO_CLR = 1 << GREEN;
     //GPIO_SET = 1 << BLUE; 
     for(i = 100; i >0; i--){SoftPWM(i,BLUE);}
- }
+// }
   
  
   return 0;
