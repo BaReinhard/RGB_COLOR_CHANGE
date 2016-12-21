@@ -1,15 +1,8 @@
 
-//  How to access GPIO registers from C-code on the Raspberry-Pi
-//  Example program
-//  15-January-2012
-//  Dom and Gert
-//  Revised: 15-Feb-2013
- 
- 
-// Access from ARM Running Linux
- 
-#define BCM2708_PERI_BASE        0x3F000000
-#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller */
+//  Access Registers, Basics taken from elinux.org
+//  Authors: Brett Reinhard 
+#define BCM2708_PERI_BASE        0x3F000000 //Base Address For BCM on Raspberry Pi 2 & 3, if using other RPI set to 0x20000000 
+#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller, can be found at 0x200000 away from BASE */
  
  
 #include <stdio.h>
@@ -31,15 +24,26 @@ volatile unsigned *gpio;
  
  
 // GPIO setup macros. Always use INP_GPIO(x) before using OUT_GPIO(x) or SET_GPIO_ALT(x,y)
+// Using INP before OUT, will allow for the proper bits to be set to 0, before setting as an output
+// If using the pin strictly for INP, you do not need to call OUT_GPIO
+// Usage for these macros are as follows: INP_GPIO(12); Sets Pin 12 as On for Input
+// INP_GPIO(10);OUT_GPIO(10); Sets pin 10 as Output, making sure to use INP before OUT to ensure proper bits are set
 #define INP_GPIO(g) *(gpio+((g)/10)) &= ~(7<<(((g)%10)*3))
 #define OUT_GPIO(g) *(gpio+((g)/10)) |=  (1<<(((g)%10)*3))
+// Allows for setting a pin for an alternate function such as for communicating with SPI or I2C
 #define SET_GPIO_ALT(g,a) *(gpio+(((g)/10))) |= (((a)<=3?(a)+4:(a)==4?3:2)<<(((g)%10)*3))
-#define NANO_SECOND_MULTIPLIER  1000000  // 1 millisecond = 1,000,000 Nanoseconds
+#define NANO_SECOND_MULTIPLIER  1000000  // 1 millisecond = 1,000,000 Nanoseconds This is used for nanosleep
 
+// Sets THE GPIO SET Register with the Proper information, Proper usage is as follows:
+// GPIO_SET = 1 << 18; Turns Pin 18 to HIGH,ON.
+// GPIO_CLR = 1 << 18; Turns Pin 18 to LOW,OFF.
+// Note: Setting GPIO_SET as GPIO_SET = 0 << 18; May cause problems when using multiple pins.
+// Use the SET macro to turn on, and CLR macro to turn off.
 #define GPIO_SET *(gpio+7)  // sets   bits which are 1 ignores bits which are 0
 #define GPIO_CLR *(gpio+10) // clears bits which are 1 ignores bits which are 0
- 
-#define GET_GPIO(g) (*(gpio+13)&(1<<g)) // 0 if LOW, (1<<g) if HIGH
+
+//
+#define GET_GPIO(g) (*(gpio+13)&(1<<g)) // 0 if LOW, (1<<g) if HIGH aka 2 ^ pinNum, if pin 3 HIGH = 2 ^ 3 = 8
  
 #define GPIO_PULL *(gpio+37) // Pull up/pull down
 #define GPIO_PULLCLK0 *(gpio+38) // Pull up/pull down clock
@@ -84,6 +88,7 @@ int main(int argc, char **argv)
 
  void BPWM(int dutyCyc)
  {
+  int readVal;
   int i;
   unsigned int diff =0;
   struct timespec on,off,timer,start,stop;
@@ -98,9 +103,13 @@ int main(int argc, char **argv)
  
  while(diff < 25){
   GPIO_SET = 1 << 12;
-  nanosleep(&on.tv_nsec,NULL);
+  readVal = GET_GPIO(12);
+  printf(readVal);
+  nanosleep(&on,NULL);
   GPIO_CLR = 1 << 12;
-  nanosleep(&off.tv_nsec,NULL);
+  readVal = GET_GPIO(12);
+  printf(readVal);
+  nanosleep(&off,NULL);
   clock_gettime(CLOCK_MONOTONIC_RAW,&stop);
   diff = (stop.tv_nsec - start.tv_nsec)/ NANO_SECOND_MULTIPLIER;
  }
