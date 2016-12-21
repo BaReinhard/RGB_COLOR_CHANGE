@@ -139,20 +139,24 @@ int main(int argc, char **argv)
  while(diff < 25){
   if (dutyCyc == 0){
     GPIO_CLR = 1 << Pin;
+    readVal = GET_GPIO(Pin);
+    printf("%x\n",readVal);
     nanosleep(&timer,NULL);
   }
   else if(dutyCyc == 100){
     GPIO_SET = 1 << Pin;
+    readVal = GET_GPIO(Pin);
+    printf("%x\n",readVal);
     nanosleep(&timer,NULL);
   }
   else{
   GPIO_SET = 1 << Pin;
   readVal = GET_GPIO(Pin);
-  printf(readVal);
+  printf("%x\n",readVal);
   nanosleep(&on,NULL);
   GPIO_CLR = 1 << Pin;
   readVal = GET_GPIO(Pin);
-  printf(readVal);
+  printf("%x\n",readVal);
   nanosleep(&off,NULL);
 }
   clock_gettime(CLOCK_MONOTONIC_RAW,&stop);
