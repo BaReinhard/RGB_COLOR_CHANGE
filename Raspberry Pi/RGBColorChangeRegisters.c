@@ -48,7 +48,7 @@ volatile unsigned *gpio;
 #define GPIO_PULLCLK0 *(gpio+38) // Pull up/pull down clock
  
 void setup_io();
-void SoftPWM(int dutyCyc);
+void SoftPWM(int dutyCyc, int Pin);
  
 void printButton(int g)
 {
