@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     GPIO_SET = 1 << RED;
     GPIO_CLR = 1 << BLUE;
     GPIO_CLR = 1 << GREEN;
-    for (i = 0; i < 101; i++){SoftPWM(i,GREEN)}
+    for (i = 0; i < 101; i++){SoftPWM(i,GREEN);}
 //r = 255; g = 255;b = 0; for (int i = 255; i >= 0; --i){RGB(i,g,b); } 
     //GPIO_SET = 1 << RED;
     //GPIO_SET = 1 << GREEN;
