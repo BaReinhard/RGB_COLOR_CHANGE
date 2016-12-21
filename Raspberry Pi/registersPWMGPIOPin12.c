@@ -98,9 +98,9 @@ int main(int argc, char **argv)
  
  while(diff < 25){
   GPIO_SET = 1 << 12;
-  nanosleep(on.tv_nsec,NULL);
+  nanosleep(&on.tv_nsec,NULL);
   GPIO_CLR = 1 << 12;
-  nanosleep(off.tv_nsec,NULL);
+  nanosleep(&off.tv_nsec,NULL);
   clock_gettime(CLOCK_MONOTONIC_RAW,&stop);
   diff = (stop.tv_nsec - start.tv_nsec)/ NANO_SECOND_MULTIPLIER;
  }
