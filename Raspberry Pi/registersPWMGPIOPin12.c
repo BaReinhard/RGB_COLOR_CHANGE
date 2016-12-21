@@ -85,7 +85,7 @@ int main(int argc, char **argv)
  void BPWM(int dutyCyc)
  {
   int i;
-  uint64_t diff =0;
+  unsigned int diff =0;
   struct timespec on,off,timer,start,stop;
   clock_gettime(CLOCK_MONOTONIC_RAW ,&start);
   on.tv_sec = 0;
@@ -93,9 +93,9 @@ int main(int argc, char **argv)
   off.tv_sec = 0;
   off.tv_nsec = ((100 - dutyCyc)/100) * NANO_SECOND_MULTIPLIER;
   timer.tv_sec = 0;
-  time.tv_nsec = 25 * NANO_SECOND_MULTIPLIER;
+  timer.tv_nsec = 25 * NANO_SECOND_MULTIPLIER;
    
- }
+ 
  while(diff < 25){
   GPIO_SET = 1 << 12;
   nanosleep(on.tv_nsec,NULL);
@@ -103,6 +103,7 @@ int main(int argc, char **argv)
   nanosleep(off.tv_nsec,NULL);
   clock_gettime(CLOCK_MONOTONIC_RAW,&stop);
   diff = (stop.tv_nsec - start.tv_nsec)/ NANO_SECOND_MULTIPLIER;
+ }
  }
  
 //
