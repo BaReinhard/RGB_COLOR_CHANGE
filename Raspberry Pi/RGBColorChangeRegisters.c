@@ -87,32 +87,32 @@ int main(int argc, char **argv)
     GPIO_SET = 1 << RED;
     GPIO_CLR = 1 << BLUE;
     GPIO_CLR = 1 << GREEN;
-    for (i = 0; i < 101; i++){SoftPWM(i,GREEN);}
+    for (i = 0; i < 101; i++){printf("%x\n",i);}//SoftPWM(i,GREEN);}
 //r = 255; g = 255;b = 0; for (int i = 255; i >= 0; --i){RGB(i,g,b); } 
     //GPIO_SET = 1 << RED;
     //GPIO_SET = 1 << GREEN;
     //GPIO_CLR = 1 << BLUE;
-    for(i = 100; i>0;i--){SoftPWM(i,RED);}
+    for(i = 100; i>0;i--){{printf("%x\n",i);}//SoftPWM(i,RED);}
 //r = 0;g = 255;b = 0; for (int i = 0; i < 256; ++i){RGB(r,g,i);}
     //GPIO_CLR = 1 << RED;
     //GPIO_SET = 1 << GREEN;
     //GPIO_CLR = 1 << BLUE;
-    for (i = 0; i < 101; i++){SoftPWM(i,BLUE);}
+    for (i = 0; i < 101; i++){{printf("%x\n",i);}//SoftPWM(i,BLUE);}
 //r = 0;g = 255;b = 255; for (int i = 255; i >= 0; --i){RGB(r,i,b);}
     //GPIO_CLR = 1 << RED;
     //GPIO_SET = 1 << GREEN;
     //GPIO_SET = 1 << BLUE;
-    for (i = 100; i>0;i--){SoftPWM(i,GREEN);}
+    for (i = 100; i>0;i--){{printf("%x\n",i);}//SoftPWM(i,GREEN);}
 //r = 0;g = 0;b = 255; for (int i = 0; i < 256; ++i){RGB(i,g,b);}
     //GPIO_CLR = 1 << RED;
     //GPIO_CLR = 1 << GREEN;
     //GPIO_SET = 1 << BLUE;
-    for (i = 0; i < 101 ; i++){SoftPWM(i,RED);}
+    for (i = 0; i < 101 ; i++){{printf("%x\n",i);}//SoftPWM(i,RED);}
 //r = 255;g = 0;b = 255; for (int i = 255; i >= 0; --i){RGB(r,g,i);}
     //GPIO_SET = 1 << RED;
     //GPIO_CLR = 1 << GREEN;
     //GPIO_SET = 1 << BLUE; 
-    for(i = 100; i >0; i--){SoftPWM(i,BLUE);}
+    for(i = 100; i >0; i--){{printf("%x\n",i);}//SoftPWM(i,BLUE);}
 // }
   
  
