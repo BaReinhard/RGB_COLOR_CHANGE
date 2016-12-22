@@ -1,9 +1,7 @@
 //  Access Registers, Basics taken from elinux.org
 //  Authors: Brett Reinhard 
-#define BCM2708_PERI_BASE        0x3F000000 //Base Address For BCM on Raspberry Pi 2 & 3, if using other RPI set to 0x20000000 
-#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) /* GPIO controller, can be found at 0x200000 away from BASE */
- 
- 
+#define BCM2708_PERI_BASE        0x3F000000 // Base Address For BCM on Raspberry Pi 2 & 3, if using other RPI set to 0x20000000 
+#define GPIO_BASE                (BCM2708_PERI_BASE + 0x200000) // GPIO controller, can be found at 0x200000 away from BASE
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -11,17 +9,12 @@
 #include <unistd.h>
 #include <time.h>
 #include <sys/time.h>
-
 #define PAGE_SIZE (4*1024)
 #define BLOCK_SIZE (4*1024)
- 
 int  mem_fd;
 void *gpio_map;
- 
 // I/O access
 volatile unsigned *gpio;
- 
- 
 // GPIO setup macros. Always use INP_GPIO(x) before using OUT_GPIO(x) or SET_GPIO_ALT(x,y)
 // Using INP before OUT, will allow for the proper bits to be set to 0, before setting as an output
 // If using the pin strictly for INP, you do not need to call OUT_GPIO
@@ -41,129 +34,139 @@ volatile unsigned *gpio;
 #define GPIO_SET *(gpio+7)  // sets   bits which are 1 ignores bits which are 0
 #define GPIO_CLR *(gpio+10) // clears bits which are 1 ignores bits which are 0
 
-//
 #define GET_GPIO(g) (*(gpio+13)&(1<<g)) // 0 if LOW, (1<<g) if HIGH aka 2 ^ pinNum, if pin 3 HIGH = 2 ^ 3 = 8
  
 #define GPIO_PULL *(gpio+37) // Pull up/pull down
 #define GPIO_PULLCLK0 *(gpio+38) // Pull up/pull down clock
  
 void setup_io();
-void SoftPWM(int dutyCyc, int Pin);
+void SoftPWM(int dutyCycle, int Pin);
  
-void printButton(int g)
-{
-  if (GET_GPIO(g)) // !=0 <-> bit is 1 <- port is HIGH=3.3V
-    printf("Button pressed!\n");
-  else // port is LOW=0V
-    printf("Button released!\n");
-}
  
 int main(int argc, char **argv)
 {
-  int RED,GREEN,BLUE,i;
-  RED = 33;
-  GREEN = 35;
-  BLUE = 37;
-  int g,rep;
- 
-  // Set up gpio pointer for direct register access
-  setup_io();
- 
+  	int RED,GREEN,BLUE,i;
+  // Choose which Pins to use, these are BCM Pin Numbers, see pinout.xyz for more pin numbers.
+  	RED = 13; 
+  	GREEN = 26;
+  	BLUE = 19;
+  	int g,rep;
 
- 
+  // Set up gpio pointer for direct register access
+  	setup_io();
+
     // Sets RED Pin as Output
-    INP_GPIO(RED); 
+	INP_GPIO(RED);
     OUT_GPIO(RED);
     // Sets GREEN Pin as Output
-    INP_GPIO(GREEN); 
+    INP_GPIO(GREEN);
     OUT_GPIO(GREEN);
-    //Sets BLUE Pin as Output
-    INP_GPIO(BLUE); 
+    // Sets BLUE Pin as Output
+    INP_GPIO(BLUE);
     OUT_GPIO(BLUE);
-//  while(1){
-    //I Have left in Previously Used Arduino C Code as a reference to see the difference between the two:
-    //  void RGB(int R, int G, int B) {analogWrite(Red,R); analogWrite(Green,G); analogWrite(Blue,B); delay(25);}
-//r = 255;g = 0;b = 0; for (int i = 0; i < 256; ++i){RGB(r,i,b);}
-    GPIO_SET = 1 << RED;
-    GPIO_CLR = 1 << BLUE;
-    GPIO_CLR = 1 << GREEN;
-    for (i = 0; i < 101; i++){printf("%x\n",i);}//SoftPWM(i,GREEN);}
-//r = 255; g = 255;b = 0; for (int i = 255; i >= 0; --i){RGB(i,g,b); } 
-    //GPIO_SET = 1 << RED;
-    //GPIO_SET = 1 << GREEN;
-    //GPIO_CLR = 1 << BLUE;
-    for(i = 100; i>0;i--){{printf("%x\n",i);}//SoftPWM(i,RED);}
-//r = 0;g = 255;b = 0; for (int i = 0; i < 256; ++i){RGB(r,g,i);}
-    //GPIO_CLR = 1 << RED;
-    //GPIO_SET = 1 << GREEN;
-    //GPIO_CLR = 1 << BLUE;
-    for (i = 0; i < 101; i++){{printf("%x\n",i);}//SoftPWM(i,BLUE);}
-//r = 0;g = 255;b = 255; for (int i = 255; i >= 0; --i){RGB(r,i,b);}
-    //GPIO_CLR = 1 << RED;
-    //GPIO_SET = 1 << GREEN;
-    //GPIO_SET = 1 << BLUE;
-    for (i = 100; i>0;i--){{printf("%x\n",i);}//SoftPWM(i,GREEN);}
-//r = 0;g = 0;b = 255; for (int i = 0; i < 256; ++i){RGB(i,g,b);}
-    //GPIO_CLR = 1 << RED;
-    //GPIO_CLR = 1 << GREEN;
-    //GPIO_SET = 1 << BLUE;
-    for (i = 0; i < 101 ; i++){{printf("%x\n",i);}//SoftPWM(i,RED);}
-//r = 255;g = 0;b = 255; for (int i = 255; i >= 0; --i){RGB(r,g,i);}
-    //GPIO_SET = 1 << RED;
-    //GPIO_CLR = 1 << GREEN;
-    //GPIO_SET = 1 << BLUE; 
-    for(i = 100; i >0; i--){{printf("%x\n",i);}//SoftPWM(i,BLUE);}
-// }
-  
- 
-  return 0;
+
+    // I Have left in Previously Used Arduino C Code as a reference to see the difference between the two:
+	while(1){
+		//-----------------------------------------------------------------------
+		// r = 255;g = 0;b = 0; for (int i = 0; i < 256; ++i){RGB(r,i,b);}
+		GPIO_SET = 1 << RED;
+		GPIO_CLR = 1 << GREEN;
+		GPIO_CLR = 1 << BLUE;
+		// RED TO YELLOW
+		for (i = 1; i < 256; i++){SoftPWM(i,GREEN);}
+		//-----------------------------------------------------------------------
+		// r = 255; g = 255;b = 0; for (int i = 255; i >= 0; --i){RGB(i,g,b); } 
+	    GPIO_SET = 1 << RED;
+	    GPIO_SET = 1 << GREEN;
+	    GPIO_CLR = 1 << BLUE;
+	    // YELLOW TO GREEN
+	    for(i = 255; i>=0;i--){SoftPWM(i,RED);}
+		//-----------------------------------------------------------------------
+		// r = 0;g = 255;b = 0; for (int i = 0; i < 256; ++i){RGB(r,g,i);}
+	    GPIO_CLR = 1 << RED;
+	    GPIO_SET = 1 << GREEN;
+	    GPIO_CLR = 1 << BLUE;
+	    // GREEN TO TEAL
+	    for (i = 0; i <= 255; i++){SoftPWM(i,BLUE);}
+		//-----------------------------------------------------------------------
+		// r = 0;g = 255;b = 255; for (int i = 255; i >= 0; --i){RGB(r,i,b);}
+	    GPIO_CLR = 1 << RED;
+	    GPIO_SET = 1 << GREEN;
+	    GPIO_SET = 1 << BLUE;
+	    // TEAL TO BLUE
+	    for (i = 255; i>=0;i--){SoftPWM(i,GREEN);}
+		//-----------------------------------------------------------------------
+		// r = 0;g = 0;b = 255; for (int i = 0; i < 256; ++i){RGB(i,g,b);}
+	    GPIO_CLR = 1 << RED;
+	    GPIO_CLR = 1 << GREEN;
+	    GPIO_SET = 1 << BLUE;
+	    // BLUE TO MAGENTA
+	    for (i = 0; i <= 255 ; i++){SoftPWM(i,RED);}
+		//-----------------------------------------------------------------------
+		// r = 255;g = 0;b = 255; for (int i = 255; i >= 0; --i){RGB(r,g,i);}
+	    GPIO_SET = 1 << RED;
+	    GPIO_CLR = 1 << GREEN;
+	    GPIO_SET = 1 << BLUE; 
+	    // MAGENTA TO RED
+	    for(i = 255; i >=0; i--){SoftPWM(i,BLUE);}
+		//-----------------------------------------------------------------------
+	  
+
+  	}
+ 	GPIO_CLR = 1 << RED;
+	GPIO_CLR = 1 << GREEN;
+	GPIO_CLR = 1 << BLUE;
+  	return 0;
  
 } // main
  
-
- void SoftPWM(int dutyCyc, int Pin)
- {
-  int i, readVal;
-  unsigned int diff =0;
-  struct timespec on,off,timer,start,stop;
-  clock_gettime(CLOCK_MONOTONIC_RAW ,&start);
-
-  on.tv_sec = 0;
-  on.tv_nsec = (dutyCyc/100) * NANO_SECOND_MULTIPLIER;
-  off.tv_sec = 0;
-  off.tv_nsec = ((100 - dutyCyc)/100) * NANO_SECOND_MULTIPLIER;
-  timer.tv_sec = 0;
-  timer.tv_nsec = 25 * NANO_SECOND_MULTIPLIER;
-   
- 
- while(diff < 25){
-  if (dutyCyc == 0){
-    GPIO_CLR = 1 << Pin;
-    readVal = GET_GPIO(Pin);
-    printf("%x\n",readVal);
-    nanosleep(&timer,NULL);
-  }
-  else if(dutyCyc == 100){
-    GPIO_SET = 1 << Pin;
-    readVal = GET_GPIO(Pin);
-    printf("%x\n",readVal);
-    nanosleep(&timer,NULL);
-  }
-  else{
-  GPIO_SET = 1 << Pin;
-  readVal = GET_GPIO(Pin);
-  printf("%x\n",readVal);
-  nanosleep(&on,NULL);
-  GPIO_CLR = 1 << Pin;
-  readVal = GET_GPIO(Pin);
-  printf("%x\n",readVal);
-  nanosleep(&off,NULL);
-}
-  clock_gettime(CLOCK_MONOTONIC_RAW,&stop);
-  diff = (stop.tv_nsec - start.tv_nsec)/ NANO_SECOND_MULTIPLIER;
- }
- 
- }
+void SoftPWM(int dutyCycle, int Pin)
+{
+	// Modifies the 255 Value into a Percentage
+ 	double dutyCyc = dutyCycle/2.55;
+  	double onTime,offTime;
+  	// Used for frequency, 488 Hz gives roughly ~2msec
+	int msecs = 2,
+		// Used as how long SoftPWM should be running do-while loop
+		TIME_PER_CALL = 5;
+	// Calculates how many *secs the Pin will stay high	
+	onTime = msecs*dutyCyc/100;
+	// Calculates how many *secs the Pin will stay low
+	offTime = (msecs*(100-dutyCyc)/100)/2;
+	// Structures used to hold values for nanosleep
+	struct timespec on,off;
+	// Data Type used to calculate when to terminate the do-while loop
+	clock_t start,end, diff;
+	// Gets start time
+	start = clock();
+	// Sets On and Off Structures with the proper nanosecond amount.
+	on.tv_sec = 0;
+	// Converts msecs to nano seconds
+	on.tv_nsec =(onTime) * NANO_SECOND_MULTIPLIER;
+	off.tv_sec = 0;
+	// Converts msecs to nano seconds
+	off.tv_nsec = (offTime) * NANO_SECOND_MULTIPLIER;
+	do
+	{  
+		// Sets Pin Off
+		GPIO_CLR = 1 << Pin;
+		// Sleeps for Specified Off Amount
+		nanosleep(&off,NULL);
+		// Sets Pin On
+		GPIO_SET = 1 << Pin;
+		// Sleeps for Specified On Amount
+		nanosleep(&on,NULL);
+		// Sets Pin Off
+		GPIO_CLR = 1 << Pin;
+		// Sleeps for Specified Off Amount
+		nanosleep(&off,NULL);
+		// One Cycle is Completed
+		// Get Clock Snapshot
+		end = clock();
+		// Calculate the elapsed time from start to "end"
+		diff = ((end - start)*(10000))/CLOCKS_PER_SEC;
+	}while(diff <= TIME_PER_CALL); // Check to see if the difference is still less than TIME_PER_CALL to continue while loop
+} // SoftPWM
  
 //
 // Set up a memory regions to access GPIO
