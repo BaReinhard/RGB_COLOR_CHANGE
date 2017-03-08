@@ -9,8 +9,7 @@ void RGB(int R, int G, int B) {
 analogWrite(Red,R); analogWrite(Green,G); analogWrite(Blue,B); delay(25);}
 void setup() {}
 void loop() {
-int r=0,g=0,b=0;
-r = 255;g = 0;b = 0; for (int i = 0; i < 256; ++i){RGB(r,i,b);}
+int r=255,g=0,b=0;for (int i = 0; i < 256; ++i){RGB(r,i,b);}
 r = 255; g = 255;b = 0; for (int i = 255; i >= 0; --i){RGB(i,g,b); } 
 r = 0;g = 255;b = 0; for (int i = 0; i < 256; ++i){RGB(r,g,i);}
 r = 0;g = 255;b = 255; for (int i = 255; i >= 0; --i){RGB(r,i,b);}
