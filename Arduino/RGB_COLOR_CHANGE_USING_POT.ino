@@ -26,7 +26,7 @@ void loop() {
   }else if(potVal >=512 && potVal < 768){
 /*3:*/    RGB(0,255,potVal-512);              //RGB(0,255,0->255) GREEN to TEAL
   }else if(potVal >= 768 && potVal < 1024){
-/*4:*/    RGB(0,-potVal+1023,255);            //RGB(0,255->,255) TEAL to BLUE
+/*4:*/    RGB(0,-potVal+1023,255);            //RGB(0,255->0,255) TEAL to BLUE
   }else if(potVal >=1024 && potVal < 1280){
 /*5:*/    RGB(potVal-1024,0,255);             //RGB(0->255,0,255) BLUE to MAGENTA
   }else if(potVal >= 1280 && potVal <1536){
